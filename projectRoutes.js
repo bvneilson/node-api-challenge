@@ -15,11 +15,38 @@ router.get('/:id', validateProjectId, (req, res) => {
   res.status(200).json(req.project);
 });
 
+router.get('/:id/actions', validateProjectId, (req, res) => {
+  const { id } = req.params;
+  db.getProjectActions(id).then(response => {
+    res.status(200).json(response);
+  }).catch(err => {
+    res.status(500).json({message: "Error retrieving project actions"});
+  })
+})
+
 router.post('/', validateProject, (req, res) => {
   db.insert(req.body).then(response => {
     res.status(200).json(response);
   }).catch(err => {
     res.status(500).json({message: "Error creating new project"});
+  })
+});
+
+router.put('/:id', validateProjectId, validateProject, (req, res) => {
+  const { id } = req.params;
+  db.update(id, req.body).then(response => {
+    res.status(200).json(response);
+  }).catch(err => {
+    res.status(500).json({message: "Unable to update project"});
+  })
+});
+
+router.delete('/:id', validateProjectId, (req, res) => {
+  const { id } = req.params;
+  db.remove(id).then(response => {
+    res.status(200).json(response);
+  }).catch(err => {
+    res.status(500).json({message: "Unable to delete project"});
   })
 })
 
