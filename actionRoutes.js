@@ -63,9 +63,14 @@ function validateAction(req, res, next) {
     res.status(400).json({message: "Please provide project id, description, and notes."});
   } else {
     projectDB.get(req.body.project_id).then(response => {
-      next();
+      if (response) {
+        console.log(response);
+        next();
+      } else {
+        res.status(404).json({message: "Project not found, please provide a valid project id."})
+      }
     }).catch(err => {
-      res.status(404).json({message: "A project with that id does not exist"});
+      res.status(500).json({message: "Unable to retrieve project"});
     })
   }
 }
